@@ -14,10 +14,10 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 # 3. 서버 실행
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+python -m app.main
 ```
 
-브라우저에서 <http://localhost:8000/docs> 접속 → Swagger UI에서 직접 테스트!
+브라우저에서 <http://localhost:8000/docs> 접속 → Swagger UI 및 Postman 에서 직접 테스트!
 
 > 💡 `0.0.0.0`과 `8000` — 저번 주에 배운 그 IP와 포트입니다.
 
