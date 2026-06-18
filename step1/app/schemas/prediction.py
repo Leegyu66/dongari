@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel, Field
 from typing import Literal
 
@@ -27,6 +29,7 @@ class TrumpInput(BaseModel):
 class WarPredictionResponse(BaseModel):
     """전쟁 확률 예측 응답 스키마."""
 
+    id: int = Field(..., description="예측 기록 ID")
     label: Literal[
         "peaceful",
         "tariff_war",
@@ -38,3 +41,13 @@ class WarPredictionResponse(BaseModel):
     probability: float = Field(..., ge=0.0, le=1.0, description="전쟁 발발 확률")
     reason: str = Field(..., description="이 결과가 나온 이유 (한 줄 풍자)")
     model_version: str = Field(..., description="사용된 모델 버전")
+    created_at: datetime = Field(..., description="예측 일시")
+
+    model_config = {"from_attributes": True}
+
+
+class PredictionListResponse(BaseModel):
+    """예측 기록 목록 응답 스키마."""
+
+    total: int
+    predictions: list[WarPredictionResponse]

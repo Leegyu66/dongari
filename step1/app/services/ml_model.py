@@ -1,4 +1,16 @@
-from app.schemas.prediction import TrumpInput, WarPredictionResponse
+from dataclasses import dataclass
+
+from app.schemas.prediction import TrumpInput
+
+
+@dataclass
+class PredictionResult:
+    """DB 저장 전 모델 내부 결과. Pydantic 응답 스키마와 분리."""
+
+    label: str
+    probability: float
+    reason: str
+    model_version: str
 
 
 class TrumpWarPredictor:
@@ -11,12 +23,12 @@ class TrumpWarPredictor:
 
     VERSION = "trump-predictor-v1.0"
 
-    def predict(self, user_input: TrumpInput) -> WarPredictionResponse:
+    def predict(self, user_input: TrumpInput) -> PredictionResult:
         risk = self._compute_risk(user_input)
         label = self._pick_label(risk)
         reason = self._make_reason(user_input, label)
 
-        return WarPredictionResponse(
+        return PredictionResult(
             label=label,
             probability=round(risk, 4),
             reason=reason,

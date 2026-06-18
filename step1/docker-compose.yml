@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: trump-db
+    environment:
+      POSTGRES_USER: trump
+      POSTGRES_PASSWORD: bigmac123
+      POSTGRES_DB: trump_war
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U trump -d trump_war"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: trump-api
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://trump:bigmac123@db:5432/trump_war
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
